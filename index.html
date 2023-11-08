@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube Music Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .download-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Youtube Music Downloader</h1>
+        <p>Enter the URL of the YouTube video:</p>
+        <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxx">
+        <br><br>
+        <button class="download-button" id="download-button">Download Music</button>
+    </div>
+    <script>
+        const downloadButton = document.getElementById('download-button');
+        const urlInput = document.getElementById('url');
+
+        downloadButton.addEventListener('click', () => {
+            const url = urlInput.value;
+            if (url) {
+                // Make an API call to a backend service to download the music
+                fetch(`/api/download?url=${encodeURIComponent(url)}`)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'music.mp3'; // You can rename the file here
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 100);
+                    });
+            } else {
+                alert('Please enter a valid URL.');
+            }
+        });
+    </script>
+</body>
+</html>
